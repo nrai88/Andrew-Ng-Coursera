@@ -4,7 +4,7 @@ gc()
 # set working directory
 setwd()
 
-dat = read.csv('ex1data1.txt', header=F)
+dat = read.csv('../machine-learning-ex1/ex1/ex1data1.txt', header=F)
 
 X = matrix(c(rep(1,nrow(dat)),dat$V1),nrow=nrow(dat),byrow=F)
 theta = as.matrix(c(0,0))
@@ -20,17 +20,24 @@ computeCost(X, y, theta)
 gradientDescent = function (X, y, theta, alpha, iterations) {
   a = vector()
   for(i in 1:iterations) {
-    #cat(computeCost(X, y, theta),'\n')
-    theta0 = theta[1,1] - alpha*sum((X %*% theta - y))/(length(y))
-    theta1 = theta[2,1] - alpha*sum((X %*% theta - y)*X[,2])/(length(y))
-    theta[1,1] = theta0
-    theta[2,1] = theta1
+    theta = theta-alpha*(t(X)%*%(X %*% theta - y))/length(y)
+    # crossprod((X %*% theta - y),X)
     a = c(a,computeCost(X, y, theta))
   }
   cat(theta)
   return(a)
 }
 
-
+alpha = 0.01
 a  = gradientDescent(X, y, theta, alpha, 1500)
 which(a==min(a))
+
+require(ggplot2)
+plot_data = data.frame(value=a,iteration=1:length(a))
+ggplot(plot_data,aes(y=a,x=iteration))+geom_point(size=0.25)+theme_bw()
+
+dat2 = read.csv('../machine-learning-ex1/ex1/ex1data2.txt',header=F)
+X = dat2[]
+featureNormalize = function(X) {
+  apply(X,2,mean)
+}
